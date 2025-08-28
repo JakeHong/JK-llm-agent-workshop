@@ -221,400 +221,400 @@ async def request_trade(request: Request):
         return {"status": "error", "error": str(e)}
 
 
-# @app.get("/api/stocks-by-mcp")
-# async def get_stock_list():
-#     try:
-#         blobs = await global_mcp_client.get_resources("trade",
-#                                                       uris="trade://stocks")
-#         if not blobs:
-#             return {"stocks": [], "error": "리소스가 비어 있습니다."}
-
-#         blob = blobs[0]
-
-#         # 문자열이 있으면 우선 사용
-#         try:
-#             text = blob.as_string()
-#             return json.loads(text)
-#         # except Exception:
-#         #     pass
-#         #
-#         # # 문자열이 없으면 바이트로 파싱
-#         # try:
-#         #     data = blob.as_bytes()
-#         #     return json.loads(data.decode("utf-8", errors="ignore"))
-#         except Exception:
-#             # 그래도 안 되면 실패 처리
-#             return {"stocks": [], "error": "리소스 파싱 실패"}
-
-#     except Exception as e:
-#         print(f"❌ MCP stocks 리소스 조회 실패: {e}")
-#         return {"stocks": [], "error": "MCP 서버에서 종목 데이터를 가져올 수 없습니다."}
-
-
-@app.get("/api/stocks")
+@app.get("/api/stocks-by-mcp")
 async def get_stock_list():
-    # Tech giants
-    tech_stocks = [
-        {
-            "ticker": "AAPL",
-            "name": "Apple Inc.",
-            "category": "Technology"
-        },
-        {
-            "ticker": "MSFT",
-            "name": "Microsoft Corporation",
-            "category": "Technology"
-        },
-        {
-            "ticker": "GOOGL",
-            "name": "Alphabet Inc. (Class A)",
-            "category": "Technology"
-        },
-        {
-            "ticker": "GOOG",
-            "name": "Alphabet Inc. (Class C)",
-            "category": "Technology"
-        },
-        {
-            "ticker": "AMZN",
-            "name": "Amazon.com Inc.",
-            "category": "Technology"
-        },
-        {
-            "ticker": "META",
-            "name": "Meta Platforms Inc.",
-            "category": "Technology"
-        },
-        {
-            "ticker": "TSLA",
-            "name": "Tesla Inc.",
-            "category": "Technology"
-        },
-        {
-            "ticker": "NVDA",
-            "name": "NVIDIA Corporation",
-            "category": "Technology"
-        },
-        {
-            "ticker": "NFLX",
-            "name": "Netflix Inc.",
-            "category": "Technology"
-        },
-        {
-            "ticker": "ADBE",
-            "name": "Adobe Inc.",
-            "category": "Technology"
-        },
-    ]
+    try:
+        blobs = await global_mcp_client.get_resources("trade",
+                                                      uris="trade://stocks")
+        if not blobs:
+            return {"stocks": [], "error": "리소스가 비어 있습니다."}
 
-    # Financial
-    financial_stocks = [
-        {
-            "ticker": "JPM",
-            "name": "JPMorgan Chase & Co.",
-            "category": "Financial"
-        },
-        {
-            "ticker": "BAC",
-            "name": "Bank of America Corp.",
-            "category": "Financial"
-        },
-        {
-            "ticker": "WFC",
-            "name": "Wells Fargo & Company",
-            "category": "Financial"
-        },
-        {
-            "ticker": "GS",
-            "name": "Goldman Sachs Group Inc.",
-            "category": "Financial"
-        },
-        {
-            "ticker": "MS",
-            "name": "Morgan Stanley",
-            "category": "Financial"
-        },
-        {
-            "ticker": "C",
-            "name": "Citigroup Inc.",
-            "category": "Financial"
-        },
-        {
-            "ticker": "AXP",
-            "name": "American Express Company",
-            "category": "Financial"
-        },
-        {
-            "ticker": "BLK",
-            "name": "BlackRock Inc.",
-            "category": "Financial"
-        },
-        {
-            "ticker": "SCHW",
-            "name": "Charles Schwab Corporation",
-            "category": "Financial"
-        },
-        {
-            "ticker": "USB",
-            "name": "U.S. Bancorp",
-            "category": "Financial"
-        },
-    ]
+        blob = blobs[0]
 
-    # Healthcare
-    healthcare_stocks = [
-        {
-            "ticker": "JNJ",
-            "name": "Johnson & Johnson",
-            "category": "Healthcare"
-        },
-        {
-            "ticker": "PFE",
-            "name": "Pfizer Inc.",
-            "category": "Healthcare"
-        },
-        {
-            "ticker": "UNH",
-            "name": "UnitedHealth Group Inc.",
-            "category": "Healthcare"
-        },
-        {
-            "ticker": "ABBV",
-            "name": "AbbVie Inc.",
-            "category": "Healthcare"
-        },
-        {
-            "ticker": "TMO",
-            "name": "Thermo Fisher Scientific Inc.",
-            "category": "Healthcare"
-        },
-        {
-            "ticker": "DHR",
-            "name": "Danaher Corporation",
-            "category": "Healthcare"
-        },
-        {
-            "ticker": "BMY",
-            "name": "Bristol Myers Squibb Company",
-            "category": "Healthcare"
-        },
-        {
-            "ticker": "MRK",
-            "name": "Merck & Co. Inc.",
-            "category": "Healthcare"
-        },
-        {
-            "ticker": "CVS",
-            "name": "CVS Health Corporation",
-            "category": "Healthcare"
-        },
-        {
-            "ticker": "GILD",
-            "name": "Gilead Sciences Inc.",
-            "category": "Healthcare"
-        },
-    ]
+        # 문자열이 있으면 우선 사용
+        try:
+            text = blob.as_string()
+            return json.loads(text)
+        # except Exception:
+        #     pass
+        #
+        # # 문자열이 없으면 바이트로 파싱
+        # try:
+        #     data = blob.as_bytes()
+        #     return json.loads(data.decode("utf-8", errors="ignore"))
+        except Exception:
+            # 그래도 안 되면 실패 처리
+            return {"stocks": [], "error": "리소스 파싱 실패"}
 
-    # Consumer
-    consumer_stocks = [
-        {
-            "ticker": "KO",
-            "name": "Coca-Cola Company",
-            "category": "Consumer"
-        },
-        {
-            "ticker": "PEP",
-            "name": "PepsiCo Inc.",
-            "category": "Consumer"
-        },
-        {
-            "ticker": "WMT",
-            "name": "Walmart Inc.",
-            "category": "Consumer"
-        },
-        {
-            "ticker": "HD",
-            "name": "Home Depot Inc.",
-            "category": "Consumer"
-        },
-        {
-            "ticker": "MCD",
-            "name": "McDonald's Corporation",
-            "category": "Consumer"
-        },
-        {
-            "ticker": "NKE",
-            "name": "Nike Inc.",
-            "category": "Consumer"
-        },
-        {
-            "ticker": "SBUX",
-            "name": "Starbucks Corporation",
-            "category": "Consumer"
-        },
-        {
-            "ticker": "TGT",
-            "name": "Target Corporation",
-            "category": "Consumer"
-        },
-        {
-            "ticker": "LOW",
-            "name": "Lowe's Companies Inc.",
-            "category": "Consumer"
-        },
-        {
-            "ticker": "COST",
-            "name": "Costco Wholesale Corporation",
-            "category": "Consumer"
-        },
-    ]
+    except Exception as e:
+        print(f"❌ MCP stocks 리소스 조회 실패: {e}")
+        return {"stocks": [], "error": "MCP 서버에서 종목 데이터를 가져올 수 없습니다."}
 
-    # Industrial
-    industrial_stocks = [
-        {
-            "ticker": "BA",
-            "name": "Boeing Company",
-            "category": "Industrial"
-        },
-        {
-            "ticker": "CAT",
-            "name": "Caterpillar Inc.",
-            "category": "Industrial"
-        },
-        {
-            "ticker": "GE",
-            "name": "General Electric Company",
-            "category": "Industrial"
-        },
-        {
-            "ticker": "MMM",
-            "name": "3M Company",
-            "category": "Industrial"
-        },
-        {
-            "ticker": "HON",
-            "name": "Honeywell International Inc.",
-            "category": "Industrial"
-        },
-        {
-            "ticker": "UPS",
-            "name": "United Parcel Service Inc.",
-            "category": "Industrial"
-        },
-        {
-            "ticker": "FDX",
-            "name": "FedEx Corporation",
-            "category": "Industrial"
-        },
-        {
-            "ticker": "LMT",
-            "name": "Lockheed Martin Corporation",
-            "category": "Industrial"
-        },
-        {
-            "ticker": "RTX",
-            "name": "RTX Corporation",
-            "category": "Industrial"
-        },
-        {
-            "ticker": "NOC",
-            "name": "Northrop Grumman Corporation",
-            "category": "Industrial"
-        },
-    ]
 
-    # Energy
-    energy_stocks = [
-        {
-            "ticker": "XOM",
-            "name": "Exxon Mobil Corporation",
-            "category": "Energy"
-        },
-        {
-            "ticker": "CVX",
-            "name": "Chevron Corporation",
-            "category": "Energy"
-        },
-        {
-            "ticker": "COP",
-            "name": "ConocoPhillips",
-            "category": "Energy"
-        },
-        {
-            "ticker": "SLB",
-            "name": "Schlumberger Limited",
-            "category": "Energy"
-        },
-        {
-            "ticker": "EOG",
-            "name": "EOG Resources Inc.",
-            "category": "Energy"
-        },
-        {
-            "ticker": "PXD",
-            "name": "Pioneer Natural Resources Company",
-            "category": "Energy"
-        },
-        {
-            "ticker": "KMI",
-            "name": "Kinder Morgan Inc.",
-            "category": "Energy"
-        },
-        {
-            "ticker": "OXY",
-            "name": "Occidental Petroleum Corporation",
-            "category": "Energy"
-        },
-        {
-            "ticker": "VLO",
-            "name": "Valero Energy Corporation",
-            "category": "Energy"
-        },
-        {
-            "ticker": "PSX",
-            "name": "Phillips 66",
-            "category": "Energy"
-        },
-    ]
+# @app.get("/api/stocks")
+# async def get_stock_list():
+#     # Tech giants
+#     tech_stocks = [
+#         {
+#             "ticker": "AAPL",
+#             "name": "Apple Inc.",
+#             "category": "Technology"
+#         },
+#         {
+#             "ticker": "MSFT",
+#             "name": "Microsoft Corporation",
+#             "category": "Technology"
+#         },
+#         {
+#             "ticker": "GOOGL",
+#             "name": "Alphabet Inc. (Class A)",
+#             "category": "Technology"
+#         },
+#         {
+#             "ticker": "GOOG",
+#             "name": "Alphabet Inc. (Class C)",
+#             "category": "Technology"
+#         },
+#         {
+#             "ticker": "AMZN",
+#             "name": "Amazon.com Inc.",
+#             "category": "Technology"
+#         },
+#         {
+#             "ticker": "META",
+#             "name": "Meta Platforms Inc.",
+#             "category": "Technology"
+#         },
+#         {
+#             "ticker": "TSLA",
+#             "name": "Tesla Inc.",
+#             "category": "Technology"
+#         },
+#         {
+#             "ticker": "NVDA",
+#             "name": "NVIDIA Corporation",
+#             "category": "Technology"
+#         },
+#         {
+#             "ticker": "NFLX",
+#             "name": "Netflix Inc.",
+#             "category": "Technology"
+#         },
+#         {
+#             "ticker": "ADBE",
+#             "name": "Adobe Inc.",
+#             "category": "Technology"
+#         },
+#     ]
 
-    # Korean stocks
-    korean_stocks = [
-        {
-            "ticker": "005930.KS",
-            "name": "Samsung Electronics Co., Ltd.",
-            "category": "Korean Tech"
-        },
-        {
-            "ticker": "018260.KS",
-            "name": "Samsung SDS Co., Ltd.",
-            "category": "Korean Tech"
-        },
-        {
-            "ticker": "000660.KS",
-            "name": "SK Hynix Inc.",
-            "category": "Korean Tech"
-        },
-        {
-            "ticker": "035420.KS",
-            "name": "NAVER Corporation",
-            "category": "Korean Tech"
-        },
-        {
-            "ticker": "207940.KS",
-            "name": "Samsung Biologics Co., Ltd.",
-            "category": "Korean Healthcare"
-        },
-        {
-            "ticker": "051910.KS",
-            "name": "LG Chem Ltd.",
-            "category": "Korean Industrial"
-        },
-    ]
+#     # Financial
+#     financial_stocks = [
+#         {
+#             "ticker": "JPM",
+#             "name": "JPMorgan Chase & Co.",
+#             "category": "Financial"
+#         },
+#         {
+#             "ticker": "BAC",
+#             "name": "Bank of America Corp.",
+#             "category": "Financial"
+#         },
+#         {
+#             "ticker": "WFC",
+#             "name": "Wells Fargo & Company",
+#             "category": "Financial"
+#         },
+#         {
+#             "ticker": "GS",
+#             "name": "Goldman Sachs Group Inc.",
+#             "category": "Financial"
+#         },
+#         {
+#             "ticker": "MS",
+#             "name": "Morgan Stanley",
+#             "category": "Financial"
+#         },
+#         {
+#             "ticker": "C",
+#             "name": "Citigroup Inc.",
+#             "category": "Financial"
+#         },
+#         {
+#             "ticker": "AXP",
+#             "name": "American Express Company",
+#             "category": "Financial"
+#         },
+#         {
+#             "ticker": "BLK",
+#             "name": "BlackRock Inc.",
+#             "category": "Financial"
+#         },
+#         {
+#             "ticker": "SCHW",
+#             "name": "Charles Schwab Corporation",
+#             "category": "Financial"
+#         },
+#         {
+#             "ticker": "USB",
+#             "name": "U.S. Bancorp",
+#             "category": "Financial"
+#         },
+#     ]
 
-    # Combine all stocks
-    all_stocks = tech_stocks + financial_stocks + healthcare_stocks + consumer_stocks + industrial_stocks + energy_stocks + korean_stocks
+#     # Healthcare
+#     healthcare_stocks = [
+#         {
+#             "ticker": "JNJ",
+#             "name": "Johnson & Johnson",
+#             "category": "Healthcare"
+#         },
+#         {
+#             "ticker": "PFE",
+#             "name": "Pfizer Inc.",
+#             "category": "Healthcare"
+#         },
+#         {
+#             "ticker": "UNH",
+#             "name": "UnitedHealth Group Inc.",
+#             "category": "Healthcare"
+#         },
+#         {
+#             "ticker": "ABBV",
+#             "name": "AbbVie Inc.",
+#             "category": "Healthcare"
+#         },
+#         {
+#             "ticker": "TMO",
+#             "name": "Thermo Fisher Scientific Inc.",
+#             "category": "Healthcare"
+#         },
+#         {
+#             "ticker": "DHR",
+#             "name": "Danaher Corporation",
+#             "category": "Healthcare"
+#         },
+#         {
+#             "ticker": "BMY",
+#             "name": "Bristol Myers Squibb Company",
+#             "category": "Healthcare"
+#         },
+#         {
+#             "ticker": "MRK",
+#             "name": "Merck & Co. Inc.",
+#             "category": "Healthcare"
+#         },
+#         {
+#             "ticker": "CVS",
+#             "name": "CVS Health Corporation",
+#             "category": "Healthcare"
+#         },
+#         {
+#             "ticker": "GILD",
+#             "name": "Gilead Sciences Inc.",
+#             "category": "Healthcare"
+#         },
+#     ]
 
-    return {"stocks": all_stocks}
+#     # Consumer
+#     consumer_stocks = [
+#         {
+#             "ticker": "KO",
+#             "name": "Coca-Cola Company",
+#             "category": "Consumer"
+#         },
+#         {
+#             "ticker": "PEP",
+#             "name": "PepsiCo Inc.",
+#             "category": "Consumer"
+#         },
+#         {
+#             "ticker": "WMT",
+#             "name": "Walmart Inc.",
+#             "category": "Consumer"
+#         },
+#         {
+#             "ticker": "HD",
+#             "name": "Home Depot Inc.",
+#             "category": "Consumer"
+#         },
+#         {
+#             "ticker": "MCD",
+#             "name": "McDonald's Corporation",
+#             "category": "Consumer"
+#         },
+#         {
+#             "ticker": "NKE",
+#             "name": "Nike Inc.",
+#             "category": "Consumer"
+#         },
+#         {
+#             "ticker": "SBUX",
+#             "name": "Starbucks Corporation",
+#             "category": "Consumer"
+#         },
+#         {
+#             "ticker": "TGT",
+#             "name": "Target Corporation",
+#             "category": "Consumer"
+#         },
+#         {
+#             "ticker": "LOW",
+#             "name": "Lowe's Companies Inc.",
+#             "category": "Consumer"
+#         },
+#         {
+#             "ticker": "COST",
+#             "name": "Costco Wholesale Corporation",
+#             "category": "Consumer"
+#         },
+#     ]
+
+#     # Industrial
+#     industrial_stocks = [
+#         {
+#             "ticker": "BA",
+#             "name": "Boeing Company",
+#             "category": "Industrial"
+#         },
+#         {
+#             "ticker": "CAT",
+#             "name": "Caterpillar Inc.",
+#             "category": "Industrial"
+#         },
+#         {
+#             "ticker": "GE",
+#             "name": "General Electric Company",
+#             "category": "Industrial"
+#         },
+#         {
+#             "ticker": "MMM",
+#             "name": "3M Company",
+#             "category": "Industrial"
+#         },
+#         {
+#             "ticker": "HON",
+#             "name": "Honeywell International Inc.",
+#             "category": "Industrial"
+#         },
+#         {
+#             "ticker": "UPS",
+#             "name": "United Parcel Service Inc.",
+#             "category": "Industrial"
+#         },
+#         {
+#             "ticker": "FDX",
+#             "name": "FedEx Corporation",
+#             "category": "Industrial"
+#         },
+#         {
+#             "ticker": "LMT",
+#             "name": "Lockheed Martin Corporation",
+#             "category": "Industrial"
+#         },
+#         {
+#             "ticker": "RTX",
+#             "name": "RTX Corporation",
+#             "category": "Industrial"
+#         },
+#         {
+#             "ticker": "NOC",
+#             "name": "Northrop Grumman Corporation",
+#             "category": "Industrial"
+#         },
+#     ]
+
+#     # Energy
+#     energy_stocks = [
+#         {
+#             "ticker": "XOM",
+#             "name": "Exxon Mobil Corporation",
+#             "category": "Energy"
+#         },
+#         {
+#             "ticker": "CVX",
+#             "name": "Chevron Corporation",
+#             "category": "Energy"
+#         },
+#         {
+#             "ticker": "COP",
+#             "name": "ConocoPhillips",
+#             "category": "Energy"
+#         },
+#         {
+#             "ticker": "SLB",
+#             "name": "Schlumberger Limited",
+#             "category": "Energy"
+#         },
+#         {
+#             "ticker": "EOG",
+#             "name": "EOG Resources Inc.",
+#             "category": "Energy"
+#         },
+#         {
+#             "ticker": "PXD",
+#             "name": "Pioneer Natural Resources Company",
+#             "category": "Energy"
+#         },
+#         {
+#             "ticker": "KMI",
+#             "name": "Kinder Morgan Inc.",
+#             "category": "Energy"
+#         },
+#         {
+#             "ticker": "OXY",
+#             "name": "Occidental Petroleum Corporation",
+#             "category": "Energy"
+#         },
+#         {
+#             "ticker": "VLO",
+#             "name": "Valero Energy Corporation",
+#             "category": "Energy"
+#         },
+#         {
+#             "ticker": "PSX",
+#             "name": "Phillips 66",
+#             "category": "Energy"
+#         },
+#     ]
+
+#     # Korean stocks
+#     korean_stocks = [
+#         {
+#             "ticker": "005930.KS",
+#             "name": "Samsung Electronics Co., Ltd.",
+#             "category": "Korean Tech"
+#         },
+#         {
+#             "ticker": "018260.KS",
+#             "name": "Samsung SDS Co., Ltd.",
+#             "category": "Korean Tech"
+#         },
+#         {
+#             "ticker": "000660.KS",
+#             "name": "SK Hynix Inc.",
+#             "category": "Korean Tech"
+#         },
+#         {
+#             "ticker": "035420.KS",
+#             "name": "NAVER Corporation",
+#             "category": "Korean Tech"
+#         },
+#         {
+#             "ticker": "207940.KS",
+#             "name": "Samsung Biologics Co., Ltd.",
+#             "category": "Korean Healthcare"
+#         },
+#         {
+#             "ticker": "051910.KS",
+#             "name": "LG Chem Ltd.",
+#             "category": "Korean Industrial"
+#         },
+#     ]
+
+#     # Combine all stocks
+#     all_stocks = tech_stocks + financial_stocks + healthcare_stocks + consumer_stocks + industrial_stocks + energy_stocks + korean_stocks
+
+#     return {"stocks": all_stocks}
 
 
 @app.websocket("/ws")
